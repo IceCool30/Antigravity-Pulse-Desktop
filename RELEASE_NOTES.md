@@ -1,55 +1,101 @@
-# Antigravity Pulse Desktop — v1.0.0
+# Antigravity Pulse Desktop v1.0.0
 
-The first stable desktop release of Antigravity Pulse.
+The first stable desktop release of Antigravity Pulse — an all-in-one OLED developer workspace hub
+with a shared Firebase cloud sync and a QR-paired Android phone companion.
+
+**Companion app:** [Antigravity Pulse for Android v1.2.1](https://github.com/IceCool30/Antigravity-Pulse-) —
+both apps share one Firebase project and one design language.
 
 ## Highlights
 
-- **Nine warm workspaces.** Switch instantly between Antigravity Remote, T3 Code Web, Google AI
-  Studio, Gemini, GitHub, Vercel, Supabase, Pulse Browser, and Cloud Sync. Every page keeps its
-  session, scroll position, and sign-in.
-- **Split view and Zen mode.** Work in two web workspaces at once with a draggable divider, or
-  press `Ctrl+\` to let the workspace fill the window.
-- **Command palette.** Press `Ctrl+K` to jump anywhere, launch a fast action, or resume a recent
-  URL.
-- **Pulse Browser.** A focused multi-tab browser with the same persistent sign-in session.
-- **Crash isolation.** If one workspace renderer stops, only that workspace shows a recovery
-  banner. Reload it in one click without losing the others.
-- **Cloud parity.** Sign in with Google and sync server profiles and copilot prompts with the
-  Android app in real time. Tokens stay on this device.
-- **Phone Companion.** An opt-in local bridge with a 256-bit pairing token, QR code, LAN /
-  Tailscale discovery, and live device list.
-- **Tray keep-alive.** Closing the window keeps Pulse running in the tray with a live workspace
-  tooltip. Quit from the tray menu when you are done.
-- **Twelve themes.** From Default Dark `#000000` / `#FFC799` to adaptive light mode, all with
-  WCAG AA+ readable accents.
+- **9 RAM-pinned Chromium workspaces.** Antigravity Remote, T3 Code Web, Google AI Studio, Gemini,
+  GitHub, Vercel, Supabase, Pulse Browser, and Cloud Sync & Phone Companion. Each is a real
+  `WebContentsView` mounted once and kept warm — sessions, sign-ins, drafts, and scroll positions
+  survive every switch. Live per-workspace RAM readouts and one-click unload to reclaim memory.
+- **Split View.** Two web workspaces side by side with a draggable divider, independent bounds, and
+  automatic collapse when the window gets too narrow. `Alt+click` a rail item to split.
+- **Command Palette (`Ctrl+K`).** Fuzzy-jump to any workspace, fast action, or recent URL without
+  leaving the keyboard.
+- **Zen mode.** `Ctrl+\` or `F11` drops the titlebar and rail so the workspace owns the whole window.
+- **12 OLED / Light themes.** Default Dark `#000000` / `#FFC799`, Legacy Dark, Catppuccin, Dracula,
+  Everforest, Gruvbox Material, Monokai, Nord, One Dark Pro, Tokyo Night, Solarized Dark, and Vesper —
+  plus adaptive light mode (`#EFF3F8` / `#FFFFFF` / `#0F172A`). Every accent is contrast-clamped to
+  WCAG AA+ at ≥ 4.8:1.
+- **System Tray Keep-Alive.** Closing the window keeps Pulse running in the tray with a live
+  workspace tooltip and pinned count. The tray menu switches workspaces, toggles the bridge, and
+  quits cleanly.
+- **Shared Firebase Cloud Sync with Android v1.2.1.** Google sign-in plus real-time Firestore CRUD
+  for server profiles and copilot prompts, using the exact schema and the same named database as the
+  Android app.
+- **QR Phone Companion Bridge.** Opt-in local HTTP + WebSocket bridge with a 256-bit bearer token,
+  LAN / Tailscale discovery, and a QR code the Android app scans directly.
+- **Pulse Browser.** A focused multi-tab browser sharing the same persistent sign-in session, with
+  tab strip, address bar, and in-page find.
+- **Crash isolation.** If one workspace renderer stops, only that workspace shows a recovery banner.
+  Reload it in one click — the other eight keep running.
 
 ## Install
 
-- **Windows:** run `Antigravity-Pulse-Desktop-v1.0.0-Setup.exe` (NSIS) or extract the portable ZIP.
-- **macOS / Linux:** build from source with `npm run dist:mac` / `npm run dist:linux`.
+| File | What it is |
+| --- | --- |
+| `Antigravity-Pulse-Desktop-v1.0.0-Setup.exe` | NSIS installer (per-user, Start Menu + desktop shortcut) |
+| `Antigravity-Pulse-Desktop-v1.0.0-Portable.zip` | Portable build — extract and run, no install |
+| `SHA256SUMS.txt` | SHA-256 manifest for both files above |
 
-Verify any downloaded artifact against `SHA256SUMS.txt`:
+macOS and Linux packaging is configured; build from source with `npm run dist:mac` /
+`npm run dist:linux`.
+
+### Windows SmartScreen first-run note
+
+v1.0.0 is an **independent, unsigned build** — it is not code-signed with a commercial certificate
+yet. On first launch Windows SmartScreen may show **"Windows protected your PC"**. This is expected
+for a new, unsigned publisher:
+
+1. Click **More info**.
+2. Click **Run anyway**.
+
+To be certain the file you downloaded is the one that was published, verify it against
+`SHA256SUMS.txt` before running:
 
 ```powershell
 Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.0-Setup.exe -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.0-Portable.zip -Algorithm SHA256
 ```
+
+Compare each result with the matching line in `SHA256SUMS.txt`. If they differ, do not run the file.
+
+## Phone Companion pairing
+
+Open **Cloud Sync & Phone Companion** (`Ctrl+9`) → **Phone Companion**, start the bridge, and scan
+the QR code with Antigravity Pulse for Android v1.2.1+.
+
+- Deep link: `antigravity://pair?url=http://<ip>:<port>&token=<token>&name=<encoded-hostname>`
+- Browser fallback: `http://<ip>:<port>/#token=<token>`
+- Default port `3847`; allow Node/Electron on **private networks** if Windows Firewall prompts.
 
 ## Privacy and security
 
-- The bridge is off by default and requires a bearer token on every API call.
-- Firebase profile documents always store `authToken: ""`; real tokens are held by the operating
-  system's secret store (DPAPI via Electron `safeStorage` on Windows).
-- Google authentication opens your system browser. The app never embeds the OAuth consent screen.
-- Handshake tokens in T3 links are kept in memory only and removed before persistence.
+- The bridge is off by default and requires the bearer token on every API call.
+- Firestore profile documents always store `authToken: ""`; real tokens live only in the OS secret
+  store (Windows DPAPI via Electron `safeStorage`).
+- Google authentication opens your **system browser** with PKCE and a loopback callback. The app
+  never embeds the OAuth consent screen.
+- T3 handshake tokens (`#token=…`) stay in memory and are stripped before anything is persisted.
+- `contextIsolation`, `sandbox`, and `nodeIntegration: false` everywhere; the renderer only talks to
+  a typed preload bridge.
 
 ## Known limitations
 
-- The OAuth consent screen may still be in **Testing**. Publish it at
-  **Google Auth Platform → Audience → Publish app** if you want accounts outside the test list.
-- GitHub Actions release automation requires an active billing account; v1.0.0 artifacts were
-  produced and uploaded manually with the GitHub CLI.
-- The built-in update checker reads GitHub Releases; it does not install updates automatically.
+- The Google OAuth consent screen may still be in **Testing**. Publish it at
+  **Google Auth Platform → Audience → Publish app** to allow accounts outside the test list.
+- GitHub Actions release automation needs an active billing account; v1.0.0 artifacts were produced
+  and uploaded manually with the GitHub CLI.
+- The update checker reads GitHub Releases; it does not install updates automatically.
+- The Google Desktop OAuth client secret is compiled into the installed app because Google's token
+  endpoint requires it even with PKCE. Google treats installed-app client secrets as
+  non-confidential; `.env` is never committed.
 
 ---
 
-Built by **Solomon Ogar Bukie** · [@IceCool30](https://github.com/IceCool30)
+Built by **Solomon Ogar Bukie** · [@IceCool30](https://github.com/IceCool30) ·
+[Antigravity Pulse for Android](https://github.com/IceCool30/Antigravity-Pulse-)

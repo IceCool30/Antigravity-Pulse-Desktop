@@ -8,7 +8,7 @@
 | Platform | Windows 10/11 (x64) first — macOS and Linux packaging configured |
 | Author | Solomon Ogar Bukie · [solomonogarbukie@gmail.com](mailto:solomonogarbukie@gmail.com) · [@IceCool30](https://github.com/IceCool30) |
 | License | MIT |
-| Companion | [Antigravity Pulse for Android](https://github.com/IceCool30/Antigravity-Pulse-/releases/latest) v1.2.1+ |
+| Companion | [Antigravity Pulse for Android](https://github.com/IceCool30/Antigravity-Pulse-) v1.2.1+ |
 | Firebase project | `gen-lang-client-0437586304` (shared with Android) |
 
 ---
@@ -209,8 +209,17 @@ paths with no query, fragment, userinfo, or metadata addresses, matching the And
 Installers are published from `gh release create v1.0.0` with:
 
 - `Antigravity-Pulse-Desktop-v1.0.0-Setup.exe` — NSIS installer
-- `Antigravity-Pulse-Desktop-v1.0.0-win-x64.zip` — portable build
+- `Antigravity-Pulse-Desktop-v1.0.0-Portable.zip` — portable build
 - `SHA256SUMS.txt` — checksum manifest
+
+v1.0.0 is an independent **unsigned** build. Windows SmartScreen may show *"Windows protected your
+PC"* on first run — click **More info → Run anyway**, and verify the download against
+`SHA256SUMS.txt` first:
+
+```powershell
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.0-Setup.exe -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.0-Portable.zip -Algorithm SHA256
+```
 
 `.github/workflows/release-desktop.yml` reproduces the same flow when GitHub Actions billing is
 available. Until then, releases are produced and uploaded manually with the GitHub CLI.

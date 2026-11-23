@@ -28,7 +28,7 @@ win:
         - x64
   icon: build/icon.ico
   executableName: Antigravity Pulse
-  artifactName: Antigravity-Pulse-Desktop-v${version}-win-x64.${ext}
+  artifactName: Antigravity-Pulse-Desktop-v${version}-Portable.${ext}
 nsis:
   oneClick: false
   perMachine: false

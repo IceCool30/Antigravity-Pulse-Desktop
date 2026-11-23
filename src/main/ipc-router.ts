@@ -24,6 +24,8 @@ export interface RouterDeps {
   getWindow: () => BrowserWindow | null
   getBootstrap: () => BootstrapInfo
   checkUpdates: () => Promise<UpdateStatus>
+  downloadUpdate: () => Promise<void>
+  installUpdate: () => void
   requestQuit: () => void
 }
 
@@ -38,6 +40,11 @@ function requireRecord(value: unknown, name: string): Record<string, unknown> {
 /** IPC serializes an omitted payload as undefined (or null on some bridges). */
 const optionalRecord = (value: unknown, name: string): Record<string, unknown> =>
   value === undefined || value === null ? {} : requireRecord(value, name)
+
+/** These commands take no arguments; reject anything unexpected from a caller. */
+function requireVoid(value: unknown, name: string): void {
+  if (value !== undefined && value !== null) throw new Error(`${name} does not accept arguments.`)
+}
 
 function stringField(
   record: Record<string, unknown>,
@@ -164,7 +171,20 @@ export function installIpcRouter(deps: RouterDeps): void {
       deps.requestQuit()
     },
 
-    'app:checkUpdates': () => deps.checkUpdates(),
+    'app:checkUpdates': (payload) => {
+      requireVoid(payload, 'Update check command')
+      return deps.checkUpdates()
+    },
+
+    'app:downloadUpdate': (payload) => {
+      requireVoid(payload, 'Download update command')
+      return deps.downloadUpdate()
+    },
+
+    'app:installUpdate': (payload) => {
+      requireVoid(payload, 'Install update command')
+      deps.installUpdate()
+    },
 
     'settings:update': async (payload) => {
       const previous = deps.settings.get()

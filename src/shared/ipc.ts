@@ -83,11 +83,25 @@ export interface BrowserSnapshot {
 /* ── Updates & auth ───────────────────────────────────────────────────────── */
 
 export interface UpdateStatus {
-  state: 'idle' | 'checking' | 'available' | 'current' | 'error'
+  state:
+    | 'idle'
+    | 'checking'
+    | 'available'
+    | 'downloading'
+    | 'downloaded'
+    | 'current'
+    | 'error'
+    | 'installing'
   latestVersion?: string
   url?: string
   message?: string
   checkedAt?: number
+  /** Download progress percentage (0–100). */
+  progress?: number
+  /** True once the installer has been downloaded and verified. */
+  downloaded?: boolean
+  /** Human-readable release notes for the available version. */
+  releaseNotes?: string
 }
 
 export interface GoogleTokens {
@@ -134,6 +148,8 @@ export interface CommandMap {
   'app:notify': { req: { title: string; body: string }; res: void }
   'app:quit': { req: void; res: void }
   'app:checkUpdates': { req: void; res: UpdateStatus }
+  'app:downloadUpdate': { req: void; res: void }
+  'app:installUpdate': { req: void; res: void }
   'settings:update': { req: SettingsPatch; res: Settings }
   'settings:reset': { req: void; res: Settings }
 
@@ -189,6 +205,8 @@ export const COMMAND_CHANNELS = [
   'app:notify',
   'app:quit',
   'app:checkUpdates',
+  'app:downloadUpdate',
+  'app:installUpdate',
   'settings:update',
   'settings:reset',
   'workspace:activate',

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Download, FolderOpen, LogOut, RefreshCw, Undo2 } from 'lucide-react'
+import { Download, FolderOpen, LogOut, Power, RefreshCw, Undo2 } from 'lucide-react'
 import { errorMessage, invoke } from '../../lib/api'
 import { useShell } from '../../store/shell'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
+import { Meter } from '../ui/Meter'
 import { Toggle } from '../ui/Toggle'
 import { SectionHint, SectionTitle, SettingRow } from './SettingRow'
 
@@ -15,6 +16,8 @@ export function SystemSection() {
   const resetSettings = useShell((state) => state.resetSettings)
   const pushToast = useShell((state) => state.pushToast)
   const [checking, setChecking] = useState(false)
+  const [downloading, setDownloading] = useState(false)
+  const [installing, setInstalling] = useState(false)
   const [confirmQuit, setConfirmQuit] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -29,16 +32,53 @@ export function SystemSection() {
     }
   }
 
+  const downloadNow = async (): Promise<void> => {
+    setDownloading(true)
+    try {
+      await invoke('app:downloadUpdate', undefined)
+    } catch (caught) {
+      pushToast({ title: 'Download failed', body: errorMessage(caught), kind: 'error' })
+    } finally {
+      setDownloading(false)
+    }
+  }
+
+  const installNow = async (): Promise<void> => {
+    setInstalling(true)
+    try {
+      await invoke('app:installUpdate', undefined)
+    } catch (caught) {
+      pushToast({ title: 'Install failed', body: errorMessage(caught), kind: 'error' })
+      setInstalling(false)
+    }
+  }
+
   const openPath = (target: 'userData' | 'downloads'): void => {
     void invoke('app:openPath', { target }).catch((error: unknown) =>
       pushToast({ title: 'Could not open folder', body: errorMessage(error), kind: 'error' })
     )
   }
 
+  const progress = Math.round(update.progress ?? 0)
+  const busy = checking || downloading || installing || update.state === 'downloading'
+  const notes = update.releaseNotes?.trim()
+
   const updateBadge =
     update.state === 'available' ? (
       <Badge variant="accent" dot>
         {update.latestVersion ?? 'Update'} available
+      </Badge>
+    ) : update.state === 'downloading' ? (
+      <Badge variant="warning" dot>
+        Downloading {progress}%
+      </Badge>
+    ) : update.state === 'downloaded' ? (
+      <Badge variant="online" dot>
+        Ready to install
+      </Badge>
+    ) : update.state === 'installing' ? (
+      <Badge variant="warning" dot>
+        Installing
       </Badge>
     ) : update.state === 'current' ? (
       <Badge variant="online" dot>
@@ -106,24 +146,84 @@ export function SystemSection() {
           />
         }
       />
-      <SettingRow
-        title="Updates"
-        description={update.message ?? 'Manual check against the latest release.'}
-        control={
-          <span className="flex items-center gap-2">
-            {updateBadge}
-            <Button
-              variant="outline"
-              size="sm"
-              icon={<RefreshCw size={12} aria-hidden />}
-              loading={checking || update.state === 'checking'}
-              onClick={() => void checkNow()}
-            >
-              Check now
-            </Button>
-          </span>
-        }
-      />
+      <div className="flex flex-col">
+        <SettingRow
+          title="Updates"
+          description={
+            update.state === 'error'
+              ? update.message ?? 'The update check failed.'
+              : update.state === 'downloading'
+                ? 'Downloading the latest installer…'
+                : update.state === 'downloaded'
+                  ? 'The installer is ready. Restart to apply the update.'
+                  : update.message ?? 'Manual check against the latest release.'
+          }
+          control={
+            <span className="flex items-center gap-2">
+              {updateBadge}
+              <Button
+                variant="outline"
+                size="sm"
+                icon={<RefreshCw size={12} aria-hidden />}
+                loading={checking || update.state === 'checking'}
+                disabled={busy}
+                onClick={() => void checkNow()}
+              >
+                Check now
+              </Button>
+              {update.state === 'available' ? (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  icon={<Download size={12} aria-hidden />}
+                  loading={downloading}
+                  disabled={busy}
+                  onClick={() => void downloadNow()}
+                >
+                  Download update
+                </Button>
+              ) : null}
+              {update.state === 'downloaded' ? (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  icon={<Power size={12} aria-hidden />}
+                  loading={installing}
+                  disabled={checking || installing}
+                  onClick={() => void installNow()}
+                >
+                  Install &amp; restart
+                </Button>
+              ) : null}
+              {update.state === 'error' ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={<RefreshCw size={12} aria-hidden />}
+                  disabled={busy}
+                  onClick={() => void checkNow()}
+                >
+                  Retry
+                </Button>
+              ) : null}
+            </span>
+          }
+        />
+        {update.state === 'downloading' ? (
+          <div className="flex items-center gap-3 py-2 text-xs text-muted">
+            <Meter className="min-w-32 flex-1" value={progress / 100} label="Download progress" />
+            <span className="tabular-nums">{progress}%</span>
+          </div>
+        ) : null}
+        {update.state === 'available' && (update.latestVersion || notes) ? (
+          <div className="py-1 text-xs text-muted">
+            {update.latestVersion ? (
+              <p>Version {update.latestVersion} is available to download.</p>
+            ) : null}
+            {notes ? <p className="mt-1 line-clamp-2 whitespace-pre-line">{notes}</p> : null}
+          </div>
+        ) : null}
+      </div>
       <SettingRow
         title="Local folders"
         description="Settings, vault, and downloads live on this machine."

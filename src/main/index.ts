@@ -12,11 +12,13 @@ import type {
   BootstrapInfo,
   BridgeStatus,
   BrowserSnapshot,
+  PulseEvent,
   RuntimeSnapshot,
   UpdateStatus
 } from '@shared/ipc'
 import { isAllowedExternalUrl, normalizePairingUrl } from '@shared/validation'
 import { WORKSPACE_ACTIONS, type WorkspaceId } from '@shared/workspaces'
+import { createAppUpdater, type AppUpdaterHandle } from './app-updater'
 import { PhoneBridge } from './bridge'
 import { setEventTarget, setNativeViewActive, publish, toast } from './events'
 import { GoogleAuthBroker } from './google-auth'
@@ -26,7 +28,6 @@ import { installApplicationMenu, bindShortcuts, type ShortcutOptions } from './s
 import { SettingsStore } from './settings-store'
 import { destroyNativeToast } from './toast-window'
 import { PulseTray } from './tray'
-import { checkForUpdates } from './update-checker'
 import { WorkspaceHost } from './workspace-host'
 
 const PROTOCOL = 'antigravity-pulse'
@@ -37,6 +38,7 @@ let host: WorkspaceHost | null = null
 let bridge: PhoneBridge | null = null
 let auth: GoogleAuthBroker | null = null
 let tray: PulseTray | null = null
+let updater: AppUpdaterHandle | null = null
 let quitting = false
 let cleanupDone = false
 let shellReady = false
@@ -180,14 +182,30 @@ function handleExternalLink(url: string): void {
   })
 }
 
-async function runUpdateCheck(manual: boolean): Promise<UpdateStatus> {
-  if (manual || updateStatus.state !== 'checking') {
-    updateStatus = { state: 'checking' }
-    publish({ type: 'update', payload: updateStatus })
+/** Every updater event reaches the renderer here, with toasts for key states. */
+function onUpdaterEvent(event: PulseEvent): void {
+  if (event.type === 'update') updateStatus = event.payload
+  publish(event)
+  if (event.type !== 'update') return
+  if (event.payload.state === 'available') {
+    toast(
+      'Update available',
+      `Version ${event.payload.latestVersion ?? 'new'} is ready to download.`,
+      'info'
+    )
+  } else if (event.payload.state === 'downloaded') {
+    toast('Update ready', 'Install and restart to finish the update.', 'success')
   }
-  const result = await checkForUpdates(app.getVersion())
+}
+
+async function runUpdateCheck(_manual: boolean): Promise<UpdateStatus> {
+  if (!updater) {
+    updateStatus = { state: 'error', message: 'Updater is not ready.', checkedAt: Date.now() }
+    publish({ type: 'update', payload: updateStatus })
+    return updateStatus
+  }
+  const result = await updater.check()
   updateStatus = result
-  publish({ type: 'update', payload: result })
   return result
 }
 
@@ -213,7 +231,7 @@ function buildBootstrap(): BootstrapInfo {
     runtime: host?.getRuntime() ?? emptyRuntime(),
     bridge: bridge?.status() ?? emptyBridgeStatus(),
     browser: lastBrowser ?? emptyBrowserSnapshot(),
-    update: updateStatus,
+    update: updater?.getStatus() ?? updateStatus,
     paths: { userData: app.getPath('userData'), downloads: app.getPath('downloads') },
     googleConfigured: auth?.isConfigured() ?? false,
     hostName: hostname(),
@@ -261,6 +279,12 @@ async function bootstrap(): Promise<void> {
   })
   mainWindow.setMenuBarVisibility(false)
   setEventTarget(mainWindow)
+
+  log('boot: updater')
+  updater = createAppUpdater({
+    currentVersion: app.getVersion(),
+    publish: onUpdaterEvent
+  })
 
   const shellSession = session.defaultSession
   shellSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false))
@@ -430,6 +454,11 @@ async function bootstrap(): Promise<void> {
     getWindow: () => mainWindow,
     getBootstrap: buildBootstrap,
     checkUpdates: () => runUpdateCheck(true),
+    downloadUpdate: () => {
+      if (!updater) throw new Error('Updater is not ready.')
+      return updater.download()
+    },
+    installUpdate: () => updater?.install(),
     requestQuit: () => requestQuit()
   })
 
@@ -474,6 +503,7 @@ async function bootstrap(): Promise<void> {
       } finally {
         host?.destroy()
         tray?.destroy()
+        updater?.dispose()
         destroyNativeToast()
         setEventTarget(null)
         cleanupDone = true

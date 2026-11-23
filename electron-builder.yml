@@ -66,4 +66,8 @@ linux:
   icon: build/icon.png
   artifactName: Antigravity-Pulse-Desktop-v${version}-linux-${arch}.${ext}
   maintainer: Solomon Ogar Bukie
-publish: null
+publish:
+  provider: github
+  owner: IceCool30
+  repo: Antigravity-Pulse-Desktop
+  releaseType: release

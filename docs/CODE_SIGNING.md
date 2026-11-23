@@ -12,7 +12,7 @@ SmartScreen reputation and is available to verified organizations.
 
 1. Create an Azure **Trusted Signing Account** in a supported region (for example `eastus`).
 2. Create a **Certificate Profile** of type `Public Trusted Signing` with publisher name exactly
-   `Solomon Ogar Bukie`.
+   `Solomon Bukie`.
 3. Grant your Azure identity the role **Trusted Signing Certificate Profile Signer** on that profile.
 4. Authenticate locally with `az login` (or set the standard `AZURE_*` environment variables for a
    service principal). The signing tool uses Microsoft Entra ID via `DefaultAzureCredential`.
@@ -24,7 +24,7 @@ SmartScreen reputation and is available to verified organizations.
        endpoint: https://eastus.codesigning.azure.net
        codeSigningAccountName: <your-trusted-signing-account>
        certificateProfileName: <your-certificate-profile>
-       publisherName: Solomon Ogar Bukie
+       publisherName: Solomon Bukie
    ```
 
 6. Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dist-signed.ps1`.
@@ -65,7 +65,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-signatures.ps
 ```
 
 Expected output for a correctly signed build: `Valid` for the installer, the portable executable,
-and both signed NSIS helper binaries, with the signer `Solomon Ogar Bukie`.
+and both signed NSIS helper binaries, with the signer `Solomon Bukie`.
 
 ## Release checklist for the signed version
 

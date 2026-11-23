@@ -202,7 +202,7 @@ export const WORKSPACE_ACTIONS: Record<
 }
 
 export const DEVELOPER = {
-  name: 'Solomon Ogar Bukie',
+  name: 'Solomon Bukie',
   email: 'solomonogarbukie@gmail.com',
   github: 'IceCool30',
   githubUrl: 'https://github.com/IceCool30',

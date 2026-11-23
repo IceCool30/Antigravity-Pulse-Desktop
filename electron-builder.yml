@@ -1,6 +1,6 @@
 appId: com.antigravitypulse.desktop
 productName: Antigravity Pulse
-copyright: Copyright © 2026 Solomon Ogar Bukie
+copyright: Copyright © 2026 Solomon Bukie
 directories:
   buildResources: build
   output: dist
@@ -35,7 +35,7 @@ win:
   #   endpoint: https://eastus.codesigning.azure.net
   #   codeSigningAccountName: <your-trusted-signing-account>
   #   certificateProfileName: <your-certificate-profile>
-  #   publisherName: Solomon Ogar Bukie
+  #   publisherName: Solomon Bukie
 nsis:
   oneClick: false
   perMachine: false
@@ -65,7 +65,7 @@ linux:
   category: Development
   icon: build/icon.png
   artifactName: Antigravity-Pulse-Desktop-v${version}-linux-${arch}.${ext}
-  maintainer: Solomon Ogar Bukie
+  maintainer: Solomon Bukie
 publish:
   provider: github
   owner: IceCool30

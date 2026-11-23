@@ -10,6 +10,7 @@ import { Stage } from './components/Stage'
 import { T3PairingModal } from './components/T3PairingModal'
 import { TitleBar } from './components/TitleBar'
 import { ToastStack } from './components/ToastStack'
+import { ZenBar } from './components/ZenBar'
 import { Button } from './components/ui/Button'
 import { Spinner } from './components/ui/Spinner'
 import { errorMessage, hasPulseApi, invoke, subscribeEvents } from './lib/api'
@@ -112,6 +113,7 @@ export default function App() {
       <BrowserChrome />
       <Rail />
       <TitleBar />
+      <ZenBar />
       {paletteOpen ? <CommandPalette /> : null}
       {settingsOpen ? <SettingsPanel /> : null}
       {phoneOpen ? <PhoneDrawer /> : null}

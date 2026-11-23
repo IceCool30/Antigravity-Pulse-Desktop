@@ -15,7 +15,7 @@ import {
   type CopilotPromptDoc,
   type ServerProfileDoc
 } from '../../lib/cloud'
-import { firebaseDatabaseId, firebaseProjectId, getFirebase, isFirebaseConfigured } from '../../lib/firebase'
+import { getFirebase, isFirebaseConfigured } from '../../lib/firebase'
 import { useShell } from '../../store/shell'
 import { GoogleMark } from '../BrandIcons'
 import { Badge } from '../ui/Badge'
@@ -207,15 +207,8 @@ export function CloudSync() {
               Sync with Antigravity Pulse for Android
             </h1>
             <p className="mt-2 text-sm text-muted">
-              Sign in with Google to share server profiles and copilot prompts through the exact
-              named Firestore database used by the Android app
-              {firebaseDatabaseId ? (
-                <>
-                  {' '}
-                  (<span className="font-mono text-xs text-fg">{firebaseDatabaseId}</span>)
-                </>
-              ) : null}
-              . Sign-in opens in your system browser.
+              Sign in with Google to share server profiles and copilot prompts with Antigravity Pulse
+              for Android. Sign-in opens in your system browser.
             </p>
 
             {authError ? (
@@ -298,9 +291,8 @@ export function CloudSync() {
               </Button>
             </header>
 
-            <p className="font-mono text-2xs text-muted">
-              project {firebaseProjectId || '—'} · database {firebaseDatabaseId || '—'}
-              <span className="ml-2 font-sans">Shared test-mode database — keep payloads credential-free.</span>
+            <p className="text-2xs text-muted">
+              Shared test-mode database — keep payloads credential-free.
             </p>
 
             <Tabs

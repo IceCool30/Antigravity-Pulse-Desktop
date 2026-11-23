@@ -273,7 +273,7 @@ export function Home() {
         {/* Footer */}
         <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-xs text-muted">
           <span className="inline-flex items-center gap-2">
-            Built by {DEVELOPER.name}
+            Developer {DEVELOPER.name}
             <button
               type="button"
               onClick={() => openExternal(DEVELOPER.githubUrl)}

@@ -5,6 +5,7 @@ import {
   RAIL_COLLAPSED_WIDTH,
   SPLIT_GAP,
   TITLEBAR_HEIGHT,
+  ZEN_BAR_HEIGHT,
   clampSplitRatio,
   computeWorkspaceLayout,
   contentAreaRect
@@ -44,14 +45,19 @@ describe('workspace bounds', () => {
     })
   })
 
-  it('removes titlebar and rail in Zen mode', () => {
+  it('hides the rail and keeps only a minimal exit strip in Zen mode', () => {
     const layout = computeWorkspaceLayout({
       ...windowSize,
       railWidth: 220,
       zen: true
     })
     expect(layout.railWidth).toBe(0)
-    expect(layout.primary).toEqual({ x: 0, y: 0, width: 1440, height: 900 })
+    expect(layout.primary).toEqual({
+      x: 0,
+      y: ZEN_BAR_HEIGHT,
+      width: 1440,
+      height: 900 - ZEN_BAR_HEIGHT
+    })
   })
 
   it('never produces negative rects for tiny or zero-sized windows', () => {

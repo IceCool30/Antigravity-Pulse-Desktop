@@ -269,7 +269,7 @@ Full-stage, scrollable, max-width 1180 centered:
 - T3 pairing card: paste a T3 link → `workspace:openT3Pairing`; inline validation; microcopy
   "Handshake tokens stay in memory and are stripped before anything is saved."
 - Keyboard strip: `Ctrl K` palette, `Ctrl 1–9` workspaces, `Ctrl \` zen, `Alt+click` split.
-- Footer: "Built by Solomon Ogar Bukie" + GitHub link (`app:openExternal`) + `v1.0.0` + Electron
+- Footer: "Developer Solomon Bukie" + GitHub link (`app:openExternal`) + `v1.0.0` + Electron
   version.
 
 ### 5.9 Command palette

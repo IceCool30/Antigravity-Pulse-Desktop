@@ -106,5 +106,5 @@ the QR code with Antigravity Pulse for Android v1.2.1+.
 
 ---
 
-Built by **Solomon Ogar Bukie** · [@IceCool30](https://github.com/IceCool30) ·
+Developer **Solomon Bukie** · [@IceCool30](https://github.com/IceCool30) ·
 [Antigravity Pulse for Android](https://github.com/IceCool30/Antigravity-Pulse-)

@@ -4,7 +4,7 @@
   "description": "Antigravity Pulse Desktop — an OLED workspace cockpit for AI and engineering consoles, with a secure phone companion bridge.",
   "main": "./out/main/index.js",
   "author": {
-    "name": "Solomon Ogar Bukie",
+    "name": "Solomon Bukie",
     "email": "solomonogarbukie@gmail.com"
   },
   "homepage": "https://github.com/IceCool30/Antigravity-Pulse-Desktop",

@@ -8,6 +8,8 @@ export interface Rect {
 }
 
 export const TITLEBAR_HEIGHT = 36
+/** Minimal strip retained in Zen mode for the always-visible exit control. */
+export const ZEN_BAR_HEIGHT = 28
 export const RAIL_COLLAPSED_WIDTH = 56
 export const RAIL_EXPANDED_WIDTH = 220
 export const BROWSER_CHROME_HEIGHT = 72
@@ -51,7 +53,9 @@ export function clampSplitRatio(
 
 export function computeWorkspaceLayout(input: WorkspaceLayoutInput): WorkspaceLayout {
   const zen = input.zen === true
-  const titlebarHeight = zen ? 0 : Math.max(0, finite(input.titlebarHeight ?? TITLEBAR_HEIGHT, TITLEBAR_HEIGHT))
+  const titlebarHeight = zen
+    ? ZEN_BAR_HEIGHT
+    : Math.max(0, finite(input.titlebarHeight ?? TITLEBAR_HEIGHT, TITLEBAR_HEIGHT))
   const browserChromeHeight = Math.max(0, finite(input.browserChromeHeight ?? 0, 0))
   const railWidth = zen ? 0 : Math.max(0, finite(input.railWidth, RAIL_COLLAPSED_WIDTH))
   const windowWidth = Math.max(0, finite(input.windowWidth, 0))

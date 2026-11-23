@@ -1,7 +1,6 @@
 import { ExternalLink, Mail } from 'lucide-react'
 import { DEVELOPER } from '@shared/workspaces'
 import { errorMessage, invoke } from '../../lib/api'
-import { firebaseDatabaseId, firebaseProjectId } from '../../lib/firebase'
 import { useShell } from '../../store/shell'
 import { GitHubMark, OrbitMark } from '../BrandIcons'
 import { Badge } from '../ui/Badge'
@@ -62,7 +61,7 @@ export function AboutSection() {
 
       <div className="flex flex-col gap-2">
         <p className="text-sm">
-          Built by <span className="font-medium">{DEVELOPER.name}</span>
+          Developer <span className="font-medium">{DEVELOPER.name}</span>
         </p>
         <div className="flex flex-wrap gap-2">
           <Button
@@ -92,15 +91,6 @@ export function AboutSection() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-line bg-surface px-4 py-3">
-        <p className="text-xs text-muted">Firestore database: shared with Antigravity Pulse Android</p>
-        <p className="mt-1 font-mono text-2xs text-fg">
-          {firebaseDatabaseId || 'not configured'}
-          {firebaseProjectId ? (
-            <span className="text-muted"> · project {firebaseProjectId}</span>
-          ) : null}
-        </p>
-      </div>
     </div>
   )
 }

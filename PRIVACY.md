@@ -2,7 +2,7 @@
 
 _Last updated: 23 November 2026_
 
-Antigravity Pulse Desktop is a local-first Electron application built by Solomon Ogar Bukie. This
+Antigravity Pulse Desktop is a local-first Electron application built by Solomon Bukie. This
 policy explains what the app stores and what it sends to Google.
 
 ## What the app stores locally
@@ -18,9 +18,8 @@ policy explains what the app stores and what it sends to Google.
 - **Google sign-in** opens your system browser. The app exchanges the authorization code with Google
   over HTTPS and uses the ID token with Firebase Authentication. It requests only `openid`, `email`,
   and `profile`.
-- **Firestore** stores server profiles and copilot prompts in the shared Firebase project
-  `gen-lang-client-0437586304`. Profile documents always contain `authToken: ""`; real tokens are
-  never uploaded.
+- **Firestore** stores server profiles and copilot prompts in the Firebase project shared with the
+  Android app. Profile documents always contain `authToken: ""`; real tokens are never uploaded.
 - No analytics, advertising SDKs, or third-party trackers are included.
 
 ## Phone bridge

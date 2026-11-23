@@ -6,10 +6,10 @@
 | --- | --- |
 | Version | 1.0.1 |
 | Platform | Windows 10/11 (x64) first — macOS and Linux packaging configured |
-| Author | Solomon Ogar Bukie · [solomonogarbukie@gmail.com](mailto:solomonogarbukie@gmail.com) · [@IceCool30](https://github.com/IceCool30) |
+| Author | Solomon Bukie · [solomonogarbukie@gmail.com](mailto:solomonogarbukie@gmail.com) · [@IceCool30](https://github.com/IceCool30) |
 | License | MIT |
 | Companion | [Antigravity Pulse for Android](https://github.com/IceCool30/Antigravity-Pulse-) v1.2.1+ |
-| Firebase project | `gen-lang-client-0437586304` (shared with Android) |
+| Firebase project | Shared with the Android app (see your local Firebase config) |
 
 ---
 
@@ -107,8 +107,8 @@ are generated at runtime and stored by the operating system.
 
 | Setting | Value |
 | --- | --- |
-| Project | `gen-lang-client-0437586304` |
-| Firestore database | `ai-studio-android-antigrav-ea683b89-609d-444d-bd8a-e4b9283b0e34` (named, not `(default)`) |
+| Project | Set `VITE_FIREBASE_PROJECT_ID` from your local Firebase config |
+| Firestore database | Set `VITE_FIREBASE_DATABASE_ID` to the named database shared with the Android app (not `(default)`) |
 | Region | `europe-west1` |
 | OAuth client type | Desktop |
 | OAuth flow | System-browser loopback + PKCE, dynamic `http://127.0.0.1:<port>/callback` |
@@ -252,6 +252,6 @@ gh release create v1.0.1 dist/Antigravity-Pulse-Desktop-v1.0.1-* dist/SHA256SUMS
 
 ---
 
-Built with care by **Solomon Ogar Bukie**. The desktop app and Android companion share one Firebase
+Built with care by **Solomon Bukie**. The desktop app and Android companion share one Firebase
 project and one design language: obsidian surfaces, warm-peach `#FFC799` accents, and calm,
 purposeful motion.

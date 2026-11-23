@@ -15,7 +15,10 @@ if (-not (Test-Path -LiteralPath $dist)) {
 }
 
 $artifacts = Get-ChildItem -LiteralPath $dist -File |
-  Where-Object { $_.Extension -in @('.exe', '.zip', '.dmg', '.AppImage') } |
+  Where-Object {
+    ($_.Extension -in @('.exe', '.zip', '.dmg', '.AppImage', '.yml')) -and
+    $_.Name -ne 'builder-debug.yml'
+  } |
   Sort-Object Name
 
 if ($artifacts.Count -eq 0) {

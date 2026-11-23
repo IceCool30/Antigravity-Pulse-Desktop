@@ -2,6 +2,23 @@
 
 All notable changes to Antigravity Pulse Desktop are documented here.
 
+## [1.0.1] — 2026-11-23
+
+### Security
+
+- Patched transitive dependencies flagged by GitHub Dependabot: `@grpc/grpc-js` is pinned to
+  `1.14.5` (fixes the high-severity `getAuthContext` authorization bypass and the low-severity
+  error-message disclosure) and `minimatch` is pinned to `11.0.1` in the packaging toolchain
+  (fixes the moderate globparts denial of service). `npm audit` now reports zero vulnerabilities.
+- The rail version label now reads the actual app version instead of a hard-coded `v1.0.0`.
+
+### Changed
+
+- No feature changes from 1.0.0. All nine workspaces, split view, command palette, phone bridge,
+  and Firestore parity behave identically.
+
+[1.0.1]: https://github.com/IceCool30/Antigravity-Pulse-Desktop/releases/tag/v1.0.1
+
 ## [1.0.0] — 2026-11-23
 
 ### Added

@@ -105,6 +105,7 @@ export function Rail() {
   const expanded = useShell((state) => state.railExpanded)
   const runtime = useShell((state) => state.runtime)
   const bridge = useShell((state) => state.bridge)
+  const appVersion = useShell((state) => state.bootstrap?.appVersion ?? '1.0.1')
   const toggleRail = useShell((state) => state.toggleRail)
   const togglePhone = useShell((state) => state.togglePhone)
   const openSettings = useShell((state) => state.openSettings)
@@ -176,7 +177,7 @@ export function Rail() {
             <Settings2 size={15} aria-hidden />
           </IconButton>
           {expanded ? <span className="flex-1" /> : null}
-          <span className="px-1 font-mono text-2xs text-muted/70">v1.0.0</span>
+          <span className="px-1 font-mono text-2xs text-muted/70">v{appVersion}</span>
         </div>
       </div>
     </nav>

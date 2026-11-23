@@ -31,7 +31,7 @@ export function AboutSection() {
         </span>
         <div className="min-w-0">
           <p className="font-display text-lg font-semibold leading-[1.15]">Antigravity Pulse</p>
-          <p className="mt-0.5 text-xs text-muted">Desktop cockpit · v{bootstrap?.appVersion ?? '1.0.0'}</p>
+          <p className="mt-0.5 text-xs text-muted">Desktop cockpit · v{bootstrap?.appVersion ?? '1.0.1'}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             <Badge>MIT License</Badge>
             <Badge variant="accent">Local-first</Badge>

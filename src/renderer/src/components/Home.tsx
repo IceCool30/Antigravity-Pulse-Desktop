@@ -286,7 +286,7 @@ export function Home() {
             </button>
           </span>
           <span className="font-mono text-2xs">
-            v{bootstrap?.appVersion ?? '1.0.0'} · Electron {bootstrap?.electronVersion ?? '—'}
+            v{bootstrap?.appVersion ?? '1.0.1'} · Electron {bootstrap?.electronVersion ?? '—'}
           </span>
         </footer>
       </div>

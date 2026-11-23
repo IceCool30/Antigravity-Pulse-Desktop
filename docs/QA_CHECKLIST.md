@@ -1,4 +1,4 @@
-# Manual QA checklist — v1.0.0
+# Manual QA checklist — v1.0.1
 
 Run after `npm run build` (and again against the packaged NSIS build). Replace anything marked
 `FAIL` in the release log with an issue entry.

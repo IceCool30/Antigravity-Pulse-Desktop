@@ -1,6 +1,6 @@
 {
   "name": "antigravity-pulse-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Antigravity Pulse Desktop — an OLED workspace cockpit for AI and engineering consoles, with a secure phone companion bridge.",
   "main": "./out/main/index.js",
   "author": {
@@ -53,5 +53,11 @@
     "vite": "^7.3.8",
     "vitest": "^4.1.12",
     "zustand": "^5.1.0"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "1.14.5",
+    "app-builder-lib": {
+      "minimatch": "11.0.1"
+    }
   }
 }

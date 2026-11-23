@@ -221,6 +221,10 @@ Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.0-Setup.exe -Algorithm SHA256
 Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.0-Portable.zip -Algorithm SHA256
 ```
 
+To produce a signed follow-up build, see [docs/CODE_SIGNING.md](docs/CODE_SIGNING.md) for Azure
+Trusted Signing and local PFX setup, plus `scripts/dist-signed.ps1` and
+`scripts/verify-signatures.ps1`.
+
 `.github/workflows/release-desktop.yml` reproduces the same flow when GitHub Actions billing is
 available. Until then, releases are produced and uploaded manually with the GitHub CLI.
 

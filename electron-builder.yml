@@ -29,6 +29,13 @@ win:
   icon: build/icon.ico
   executableName: Antigravity Pulse
   artifactName: Antigravity-Pulse-Desktop-v${version}-Portable.${ext}
+  # Azure Trusted Signing — uncomment and fill in when a certificate profile exists.
+  # See docs/CODE_SIGNING.md. Requires `az login` or AZURE_* environment variables.
+  # azureSignOptions:
+  #   endpoint: https://eastus.codesigning.azure.net
+  #   codeSigningAccountName: <your-trusted-signing-account>
+  #   certificateProfileName: <your-certificate-profile>
+  #   publisherName: Solomon Ogar Bukie
 nsis:
   oneClick: false
   perMachine: false

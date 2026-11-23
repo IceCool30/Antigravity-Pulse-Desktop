@@ -19,7 +19,7 @@ import {
   stripUrlSecrets
 } from '@shared/validation'
 import { authPopupOptions, isAuthPopupUrl } from './popups'
-import { partitionFor, workspaceSession } from './sessions'
+import { browserUserAgent, partitionFor, workspaceSession } from './sessions'
 
 interface InternalTab extends BrowserTab {
   view: WebContentsView
@@ -111,7 +111,7 @@ export class PulseBrowser {
     const normalized = coerceAddressInput(raw)
     const tab = this.activeTab()
     if (!normalized || !tab || tab.view.webContents.isDestroyed()) return
-    void tab.view.webContents.loadURL(normalized).catch(() => {
+    void tab.view.webContents.loadURL(normalized, { userAgent: browserUserAgent() }).catch(() => {
       /* did-fail-load handles the UI state */
     })
   }
@@ -248,7 +248,7 @@ export class PulseBrowser {
     this.tabs.push(tab)
     this.bindTab(tab, partition)
     const contents = view.webContents
-    void contents.loadURL(url).catch(() => {
+    void contents.loadURL(url, { userAgent: browserUserAgent() }).catch(() => {
       /* surfaced through did-fail-load */
     })
     return tab

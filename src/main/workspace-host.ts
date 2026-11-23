@@ -35,7 +35,7 @@ import {
 } from '@shared/validation'
 import { PulseBrowser } from './pulse-browser'
 import { authPopupOptions, isAuthPopupUrl } from './popups'
-import { partitionFor, workspaceSession } from './sessions'
+import { browserUserAgent, partitionFor, workspaceSession } from './sessions'
 
 export interface WorkspaceHostOptions {
   window: BrowserWindow
@@ -330,7 +330,7 @@ export class WorkspaceHost {
     }
     const view = this.ensureView(id)
     if (!view) return
-    void view.webContents.loadURL(normalized.value).catch(() => {
+    void view.webContents.loadURL(normalized.value, { userAgent: browserUserAgent() }).catch(() => {
       /* did-fail-load handles the banner */
     })
   }
@@ -349,7 +349,7 @@ export class WorkspaceHost {
       this.options.saveSettings({ lastUrls: { ...settings.lastUrls, t3: clean } })
     }
     this.layout()
-    void view.webContents.loadURL(normalized.value).catch(() => {
+    void view.webContents.loadURL(normalized.value, { userAgent: browserUserAgent() }).catch(() => {
       /* did-fail-load handles the banner */
     })
     this.emitNow()
@@ -513,7 +513,7 @@ export class WorkspaceHost {
     const contents = view.webContents
     contents.setZoomLevel(settings.zoom[id] ?? 0)
     this.bindView(id, view, partition)
-    void contents.loadURL(initialUrl).catch(() => {
+    void contents.loadURL(initialUrl, { userAgent: browserUserAgent() }).catch(() => {
       /* did-fail-load handles the banner */
     })
     this.scheduleEmit()

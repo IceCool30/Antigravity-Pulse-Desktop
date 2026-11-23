@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 import {
+  ArrowLeft,
+  ArrowRight,
   Columns2,
   Copy,
   Maximize2,
@@ -135,6 +137,23 @@ export function TitleBar() {
     activeId !== 'cloud' &&
     width >= MIN_PANE_WIDTH * 2 + SPLIT_GAP + railWidth
   const splitActive = runtime?.split === true
+  // Pulse Browser already has its own back/forward controls in its 72px chrome;
+  // Cloud Sync and Home have no web history. Every other workspace gets them here.
+  const showHistory = activeId !== null && activeId !== 'browser' && activeId !== 'cloud'
+  const canGoBack = activeState?.canGoBack === true
+  const canGoForward = activeState?.canGoForward === true
+
+  const historyAction = (direction: 'back' | 'forward'): void => {
+    if (!activeId) return
+    void invoke(direction === 'back' ? 'workspace:back' : 'workspace:forward', { id: activeId }).catch(
+      (error: unknown) =>
+        pushToast({
+          title: direction === 'back' ? 'Could not go back' : 'Could not go forward',
+          body: errorMessage(error),
+          kind: 'error'
+        })
+    )
+  }
 
   const windowAction = (action: 'minimize' | 'maximize' | 'close'): void => {
     void invoke('app:window', { action }).catch((error: unknown) =>
@@ -169,6 +188,29 @@ export function TitleBar() {
         </span>
         {activeWorkspace ? (
           <>
+            {showHistory ? (
+              <>
+                <span aria-hidden className="h-4 w-px shrink-0 bg-line" />
+                <IconButton
+                  className="titlebar-no-drag"
+                  size="sm"
+                  label="Back (Alt+←)"
+                  disabled={!canGoBack}
+                  onClick={() => historyAction('back')}
+                >
+                  <ArrowLeft size={14} aria-hidden />
+                </IconButton>
+                <IconButton
+                  className="titlebar-no-drag"
+                  size="sm"
+                  label="Forward (Alt+→)"
+                  disabled={!canGoForward}
+                  onClick={() => historyAction('forward')}
+                >
+                  <ArrowRight size={14} aria-hidden />
+                </IconButton>
+              </>
+            ) : null}
             <span aria-hidden className="h-4 w-px shrink-0 bg-line" />
             <span className="truncate text-xs text-fg">{activeWorkspace.name}</span>
             {activeHost ? (

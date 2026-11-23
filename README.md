@@ -243,6 +243,7 @@ gh release create v1.0.1 dist/Antigravity-Pulse-Desktop-v1.0.1-* dist/SHA256SUMS
 | --- | --- |
 | "Google sign-in is not configured" | Fill both `MAIN_VITE_GOOGLE_CLIENT_*` values in `.env`, then rebuild. |
 | OAuth error `403: access_blocked` | Publish the consent screen, or add the account as a test user. |
+| "This browser or app may not be secure" on a sign-in page | The app now sends a genuine Chrome UA matching its bundled Chromium. Google can still refuse embedded sign-ins; use the address bar's **Open in system browser** button (or set external links to System browser) for that account. Cloud Sync already signs in through your system browser. |
 | Workspace shows a crash banner | Only that renderer stopped. Click **Reload workspace**; the others are untouched. |
 | Bridge QR is empty | Port conflict — set another port (1024–65535) or stop the conflicting app. |
 | Phone cannot find the bridge | Use the same Wi-Fi or Tailscale, allow Node/Electron on private networks, and verify the LAN address. |

@@ -1,4 +1,4 @@
-import { app, session, type Session } from 'electron'
+import { session, type Session } from 'electron'
 
 const hardened = new Set<string>()
 
@@ -13,14 +13,19 @@ const PERMISSION_ALLOWLIST = new Set([
   'pointerLock'
 ])
 
-/** Chrome desktop UA without Electron/app tokens (Google consoles reject raw Electron UAs). */
+/**
+ * A genuine desktop Chrome UA matching the bundled Chromium version. Embedded
+ * sign-in pages (notably Google) reject UAs containing `Electron`, and some
+ * reject the raw Electron fallback even after token stripping.
+ */
 export function browserUserAgent(): string {
-  return app.userAgentFallback
-    .replace(/\sElectron\/[\d.]+/gi, '')
-    .replace(/\sAntigravity[\s-]?Pulse(?:[\s-]?Desktop)?\/[\d.]+/gi, '')
-    .replace(/\santigravity-pulse-desktop\/[\d.]+/gi, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim()
+  const platform =
+    process.platform === 'darwin'
+      ? 'Macintosh; Intel Mac OS X 10_15_7'
+      : process.platform === 'linux'
+        ? 'X11; Linux x86_64'
+        : 'Windows NT 10.0; Win64; x64'
+  return `Mozilla/5.0 (${platform}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`
 }
 
 export function partitionFor(workspaceId: string, isolated: readonly string[]): string {

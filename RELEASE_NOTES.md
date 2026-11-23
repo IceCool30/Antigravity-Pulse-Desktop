@@ -1,11 +1,27 @@
-# Antigravity Pulse Desktop v1.0.1
+# Antigravity Pulse Desktop v1.0.2
 
-A security-maintenance update to v1.0.0 — an all-in-one OLED developer workspace hub with shared
-Firebase cloud sync and a QR-paired Android phone companion. All features are unchanged; dependency
-advisories reported by GitHub are patched and `npm audit` is clean.
+The newest desktop release — an all-in-one OLED developer workspace hub with shared Firebase cloud
+sync and a QR-paired Android phone companion. This build adds in-app self-updating, fixes embedded
+sign-in and navigation, and cleans up the About screen. Dependency advisories are patched and
+`npm audit` is clean.
 
-**Companion app:** [Antigravity Pulse for Android v1.2.1](https://github.com/IceCool30/Antigravity-Pulse-) —
+**Companion app:** [Antigravity Pulse for Android v1.2.2](https://github.com/IceCool30/Antigravity-Pulse-) —
 both apps share one Firebase project and one design language.
+
+## What's new in 1.0.2
+
+- **In-app updates.** Check GitHub Releases, download the verified installer with progress, and
+  install/restart with one click from Settings → System. You no longer need to visit GitHub manually.
+- **Embedded sign-in fix.** Workspaces and Pulse Browser now send a genuine Chrome user agent matching
+  the bundled Chromium, which resolves Google's *"This browser or app may not be secure"* message in
+  most cases. An **Open in system browser** action remains as a fallback.
+- **Back and forward arrows** in the title bar for every web workspace (Pulse Browser retains its own
+  arrows in its tab chrome). `Alt+←` / `Alt+→` still work everywhere.
+- **Zen mode exit button.** A minimal 28px strip keeps a small exit control visible in Zen mode, so
+  you never need to remember the shortcut.
+- **Cleaner About screen.** Firebase project and database identifiers are no longer displayed, and
+  the footer reads *Developer Solomon Bukie*.
+- **Security patch.** `@grpc/grpc-js` and `minimatch` were updated; all Dependabot alerts are fixed.
 
 ## Highlights
 
@@ -35,11 +51,11 @@ both apps share one Firebase project and one design language.
 - **Crash isolation.** If one workspace renderer stops, only that workspace shows a recovery banner.
   Reload it in one click — the other eight keep running.
 
-## Security fixes in 1.0.1
+## Security fixes in 1.0.2
 
 - `@grpc/grpc-js` pinned to `1.14.5` — fixes the high-severity `getAuthContext` authorization bypass
   and a low-severity error-message disclosure in the Firebase toolchain.
-- `minimatch` pinned to `11.0.1` in the packaging toolchain — fixes a moderate denial-of-service
+- `minimatch` pinned to `11.0.2` in the packaging toolchain — fixes a moderate denial-of-service
   issue with crafted glob patterns.
 - `npm audit` now reports **0 vulnerabilities**.
 
@@ -47,8 +63,8 @@ both apps share one Firebase project and one design language.
 
 | File | What it is |
 | --- | --- |
-| `Antigravity-Pulse-Desktop-v1.0.1-Setup.exe` | NSIS installer (per-user, Start Menu + desktop shortcut) |
-| `Antigravity-Pulse-Desktop-v1.0.1-Portable.zip` | Portable build — extract and run, no install |
+| `Antigravity-Pulse-Desktop-v1.0.2-Setup.exe` | NSIS installer (per-user, Start Menu + desktop shortcut) |
+| `Antigravity-Pulse-Desktop-v1.0.2-Portable.zip` | Portable build — extract and run, no install |
 | `SHA256SUMS.txt` | SHA-256 manifest for both files above |
 
 macOS and Linux packaging is configured; build from source with `npm run dist:mac` /
@@ -56,7 +72,7 @@ macOS and Linux packaging is configured; build from source with `npm run dist:ma
 
 ### Windows SmartScreen first-run note
 
-v1.0.1 is an **independent, unsigned build** — it is not code-signed with a commercial certificate
+v1.0.2 is an **independent, unsigned build** — it is not code-signed with a commercial certificate
 yet. On first launch Windows SmartScreen may show **"Windows protected your PC"**. This is expected
 for a new, unsigned publisher:
 
@@ -67,8 +83,8 @@ To be certain the file you downloaded is the one that was published, verify it a
 `SHA256SUMS.txt` before running:
 
 ```powershell
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.1-Setup.exe -Algorithm SHA256
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.1-Portable.zip -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.2-Setup.exe -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.2-Portable.zip -Algorithm SHA256
 ```
 
 Compare each result with the matching line in `SHA256SUMS.txt`. If they differ, do not run the file.
@@ -97,7 +113,7 @@ the QR code with Antigravity Pulse for Android v1.2.1+.
 
 - The Google OAuth consent screen may still be in **Testing**. Publish it at
   **Google Auth Platform → Audience → Publish app** to allow accounts outside the test list.
-- GitHub Actions release automation needs an active billing account; v1.0.1 artifacts were produced
+- GitHub Actions release automation needs an active billing account; v1.0.2 artifacts were produced
   and uploaded manually with the GitHub CLI.
 - The update checker reads GitHub Releases; it does not install updates automatically.
 - The Google Desktop OAuth client secret is compiled into the installed app because Google's token

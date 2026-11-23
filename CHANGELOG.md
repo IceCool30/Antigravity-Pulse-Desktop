@@ -2,6 +2,24 @@
 
 All notable changes to Antigravity Pulse Desktop are documented here.
 
+## [1.0.2] — 2026-11-23
+
+### Added
+
+- In-app self-update: check GitHub Releases, download the verified installer with progress, and
+  install/restart from Settings → System. `latest.yml` is published with every NSIS release.
+- Back and forward arrows in the title bar for web workspaces.
+- A small always-visible exit control in Zen mode.
+
+### Fixed
+
+- Embedded sign-in now sends a genuine Chrome user agent matching the bundled Chromium, resolving
+  Google's "browser or app may not be secure" message in most cases; system-browser fallback remains.
+- Removed Firebase project/database identifiers from in-app UI and public docs.
+- Display name shortened to Solomon Bukie and "Built by" changed to "Developer".
+
+[1.0.2]: https://github.com/IceCool30/Antigravity-Pulse-Desktop/releases/tag/v1.0.2
+
 ## [1.0.1] — 2026-11-23
 
 ### Security

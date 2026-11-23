@@ -1,0 +1,250 @@
+@import "tailwindcss";
+
+/* ── Runtime theme tokens (written by lib/theme.ts from resolveTheme) ──────── */
+:root {
+  --bg: #000000;
+  --surface: #0f0f0f;
+  --surface-elevated: #1c1c1c;
+  --surface-hover: #1a1a1a;
+  --fg: #ffffff;
+  --muted: #d1d1d1;
+  --accent: #ffc799;
+  --accent-raw: #ffc799;
+  --accent-soft: rgba(255, 199, 153, 0.12);
+  --on-accent: #000000;
+  --border: rgba(255, 255, 255, 0.22);
+  --border-strong: rgba(255, 255, 255, 0.3);
+  --glass: rgba(8, 8, 9, 0.68);
+  --glass-highlight: rgba(255, 255, 255, 0.06);
+  --status-online: #10b981;
+  --status-error: #ef4444;
+  --status-warning: #f59e0b;
+  --ai-accent: #7dd3fc;
+  --shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --font-ui: "Inter Variable", "Inter", system-ui, sans-serif;
+  --app-font-size: 14px;
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-elevated: var(--surface-elevated);
+  --color-hover: var(--surface-hover);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-raw: var(--accent-raw);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-online: var(--status-online);
+  --color-error: var(--status-error);
+  --color-warning: var(--status-warning);
+  --color-ai: var(--ai-accent);
+
+  --font-display: "Space Grotesk Variable", "Space Grotesk", "Inter Variable", sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+
+  /* Type scale 11/12/13/14/16/20/28/40 at the 14px base; scales with settings. */
+  --text-2xs: 0.786rem;
+  --text-2xs--line-height: 1.45;
+  --text-xs: 0.857rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.929rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-md: 1.143rem;
+  --text-md--line-height: 1.5;
+  --text-lg: 1.429rem;
+  --text-lg--line-height: 1.15;
+  --text-xl: 2rem;
+  --text-xl--line-height: 1.15;
+  --text-2xl: 2.857rem;
+  --text-2xl--line-height: 1.15;
+}
+
+html {
+  font-size: var(--app-font-size);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  position: fixed;
+  inset: 0;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbars: 8px, translucent thumb ────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* ── Frameless window drag regions ─────────────────────────────────────────── */
+.titlebar-drag {
+  -webkit-app-region: drag;
+  user-select: none;
+}
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* ── Beveled glass surfaces ────────────────────────────────────────────────── */
+@utility glass {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    var(--shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+@utility panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    var(--shadow-soft);
+}
+
+@utility panel-elevated {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    var(--shadow-soft);
+}
+
+:root[data-frosted="false"] .glass {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: var(--surface-elevated);
+}
+
+/* ── Motion ────────────────────────────────────────────────────────────────── */
+@keyframes pulse-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulse-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes pulse-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes pulse-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+@keyframes pulse-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.anim-fade-up {
+  animation: pulse-fade-up 180ms var(--ease-soft) both;
+}
+.anim-scale-in {
+  animation: pulse-scale-in 160ms var(--ease-soft) both;
+}
+.anim-slide-in {
+  animation: pulse-slide-in 180ms var(--ease-soft) both;
+}
+
+.shimmer {
+  background-image: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+  background-size: 200% 100%;
+  animation: pulse-shimmer 1.6s linear infinite;
+}
+
+.orbit-spinner {
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: pulse-orbit 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+:root[data-reduced-motion="true"] *,
+:root[data-reduced-motion="true"] *::before,
+:root[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

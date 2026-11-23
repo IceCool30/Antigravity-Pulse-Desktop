@@ -1,0 +1,14 @@
+node_modules/
+out/
+dist/
+release/
+*.log
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+.vite/
+coverage/
+*.tsbuildinfo
+

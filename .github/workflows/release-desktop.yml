@@ -1,0 +1,147 @@
+name: Release Desktop
+
+# GitHub Actions is disabled on billing-locked accounts. v1.0.0 is produced and
+# uploaded manually with the GitHub CLI; this workflow reproduces that flow once
+# Actions is available again.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (for example v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      publish:
+        description: 'Create or update the GitHub release'
+        type: boolean
+        required: false
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-desktop-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    name: Windows installer + portable ZIP
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify
+        run: |
+          npm test
+          npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Package (NSIS + ZIP)
+        run: npm run dist:win
+
+      - name: Checksums
+        shell: bash
+        run: |
+          cd dist
+          sha256sum *.exe *.zip > SHA256SUMS-win.txt
+          cat SHA256SUMS-win.txt
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: antigravity-pulse-windows
+          path: |
+            dist/*.exe
+            dist/*.zip
+            dist/SHA256SUMS-win.txt
+
+      - name: Publish release
+        if: ${{ inputs.publish }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ inputs.tag }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.exe dist/*.zip dist/SHA256SUMS-win.txt --clobber
+          else
+            gh release create "$TAG" dist/*.exe dist/*.zip dist/SHA256SUMS-win.txt \
+              --title "Antigravity Pulse Desktop $TAG" \
+              --notes-file RELEASE_NOTES.md
+          fi
+
+  linux:
+    name: Linux AppImage
+    needs: windows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package (AppImage)
+        run: npm run dist:linux
+
+      - name: Checksums
+        shell: bash
+        run: |
+          cd dist
+          sha256sum *.AppImage > SHA256SUMS-linux.txt
+          cat SHA256SUMS-linux.txt
+
+      - name: Publish artifacts
+        if: ${{ inputs.publish }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ inputs.tag }}" dist/*.AppImage dist/SHA256SUMS-linux.txt --clobber
+
+  macos:
+    name: macOS DMG
+    needs: windows
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package (DMG, unsigned)
+        run: npm run dist:mac
+
+      - name: Checksums
+        shell: bash
+        run: |
+          cd dist
+          sha256sum *.dmg > SHA256SUMS-macos.txt
+          cat SHA256SUMS-macos.txt
+
+      - name: Publish artifacts
+        if: ${{ inputs.publish }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ inputs.tag }}" dist/*.dmg dist/SHA256SUMS-macos.txt --clobber

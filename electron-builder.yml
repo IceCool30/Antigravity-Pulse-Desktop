@@ -1,0 +1,62 @@
+appId: com.antigravitypulse.desktop
+productName: Antigravity Pulse
+copyright: Copyright © 2026 Solomon Ogar Bukie
+directories:
+  buildResources: build
+  output: dist
+files:
+  - out/**/*
+  - package.json
+  - '!**/*.map'
+extraResources:
+  - from: build/tray.png
+    to: tray.png
+protocols:
+  - name: Antigravity Pulse
+    schemes:
+      - antigravity-pulse
+asar: true
+compression: maximum
+removePackageScripts: true
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: zip
+      arch:
+        - x64
+  icon: build/icon.ico
+  executableName: Antigravity Pulse
+  artifactName: Antigravity-Pulse-Desktop-v${version}-win-x64.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Antigravity Pulse
+  artifactName: Antigravity-Pulse-Desktop-v${version}-Setup.${ext}
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.developer-tools
+  icon: build/icon.png
+  artifactName: Antigravity-Pulse-Desktop-v${version}-${arch}.${ext}
+  identity: null
+linux:
+  target:
+    - AppImage
+  category: Development
+  icon: build/icon.png
+  artifactName: Antigravity-Pulse-Desktop-v${version}-linux-${arch}.${ext}
+  maintainer: Solomon Ogar Bukie
+publish: null

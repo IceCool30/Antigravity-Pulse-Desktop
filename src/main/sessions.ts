@@ -1,4 +1,10 @@
-import { session, type Session } from 'electron'
+import { session, type Session, type WebPreferences } from 'electron'
+import { join } from 'node:path'
+import {
+  DEFAULT_ACCEPT_LANGUAGE,
+  applyBrowserRequestHeaders,
+  buildBrowserUserAgent
+} from '@shared/browser-identity'
 
 const hardened = new Set<string>()
 
@@ -19,13 +25,26 @@ const PERMISSION_ALLOWLIST = new Set([
  * reject the raw Electron fallback even after token stripping.
  */
 export function browserUserAgent(): string {
-  const platform =
-    process.platform === 'darwin'
-      ? 'Macintosh; Intel Mac OS X 10_15_7'
-      : process.platform === 'linux'
-        ? 'X11; Linux x86_64'
-        : 'Windows NT 10.0; Win64; x64'
-  return `Mozilla/5.0 (${platform}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`
+  return buildBrowserUserAgent(process.platform, process.versions['chrome'])
+}
+
+export function browserCompatPreloadPath(): string {
+  return join(__dirname, '../preload/browser-compat.js')
+}
+
+export function browserWebPreferences(partition: string): WebPreferences {
+  return {
+    partition,
+    preload: browserCompatPreloadPath(),
+    sandbox: true,
+    contextIsolation: true,
+    nodeIntegration: false,
+    nodeIntegrationInSubFrames: true,
+    webSecurity: true,
+    allowRunningInsecureContent: false,
+    spellcheck: true,
+    backgroundThrottling: true
+  }
 }
 
 export function partitionFor(workspaceId: string, isolated: readonly string[]): string {
@@ -39,7 +58,17 @@ export function workspaceSession(partition: string): Session {
   const ses = session.fromPartition(partition)
   if (!hardened.has(partition)) {
     hardened.add(partition)
-    ses.setUserAgent(browserUserAgent())
+    const identity = {
+      platform: process.platform,
+      arch: process.arch,
+      chromeVersion: process.versions['chrome']
+    }
+    ses.setUserAgent(browserUserAgent(), DEFAULT_ACCEPT_LANGUAGE)
+    ses.webRequest.onBeforeSendHeaders({ urls: ['http://*/*', 'https://*/*'] }, (details, callback) => {
+      callback({
+        requestHeaders: applyBrowserRequestHeaders(details.requestHeaders, details.url, identity)
+      })
+    })
     ses.setPermissionRequestHandler((_contents, permission, callback) => {
       callback(PERMISSION_ALLOWLIST.has(permission))
     })

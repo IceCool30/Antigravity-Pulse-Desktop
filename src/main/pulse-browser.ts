@@ -18,8 +18,8 @@ import {
   normalizePairingUrl,
   stripUrlSecrets
 } from '@shared/validation'
-import { authPopupOptions, isAuthPopupUrl } from './popups'
-import { browserUserAgent, partitionFor, workspaceSession } from './sessions'
+import { authPopupOptions, bindAuthPopupWindow, isAuthPopupUrl } from './popups'
+import { browserUserAgent, browserWebPreferences, partitionFor, workspaceSession } from './sessions'
 
 interface InternalTab extends BrowserTab {
   view: WebContentsView
@@ -219,16 +219,7 @@ export class PulseBrowser {
     const partition = partitionFor('browser', settings.isolatedWorkspaces)
     workspaceSession(partition)
     const view = new WebContentsView({
-      webPreferences: {
-        partition,
-        sandbox: true,
-        contextIsolation: true,
-        nodeIntegration: false,
-        webSecurity: true,
-        allowRunningInsecureContent: false,
-        spellcheck: true,
-        backgroundThrottling: true
-      }
+      webPreferences: browserWebPreferences(partition)
     })
     view.setBackgroundColor('#0B0E14')
     view.setVisible(false)
@@ -271,6 +262,9 @@ export class PulseBrowser {
         else void shell.openExternal(url)
       }
       return { action: 'deny' }
+    })
+    contents.on('did-create-window', (child) => {
+      bindAuthPopupWindow(child, partition, this.options.window, (url) => this.options.openExternalLink(url))
     })
 
     const touch = (): void => {

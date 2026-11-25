@@ -26,21 +26,18 @@ import { installIpcRouter } from './ipc-router'
 import { setNotificationsEnabled, showNotification } from './notifications'
 import { installApplicationMenu, bindShortcuts, type ShortcutOptions } from './shortcuts'
 import { SettingsStore } from './settings-store'
+import { browserUserAgent } from './sessions'
 import { destroyNativeToast } from './toast-window'
 import { PulseTray } from './tray'
 import { WorkspaceHost } from './workspace-host'
 
 /**
- * Set a genuine Chrome fallback before any session/webContents exist. Google's
- * sign-in flow rejects embedded browsers whose UA still identifies as Electron.
+ * Remove blink automation markers and use a genuine desktop Chrome fallback
+ * before any session/webContents exist so Google and other OAuth providers
+ * do not treat embedded views as unverified or automated browsers.
  */
-app.userAgentFallback = `Mozilla/5.0 (${
-  process.platform === 'darwin'
-    ? 'Macintosh; Intel Mac OS X 10_15_7'
-    : process.platform === 'linux'
-      ? 'X11; Linux x86_64'
-      : 'Windows NT 10.0; Win64; x64'
-}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`
+app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled')
+app.userAgentFallback = browserUserAgent()
 
 const PROTOCOL = 'antigravity-pulse'
 

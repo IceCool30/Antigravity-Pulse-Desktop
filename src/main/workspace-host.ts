@@ -34,8 +34,8 @@ import {
   stripUrlSecrets
 } from '@shared/validation'
 import { PulseBrowser } from './pulse-browser'
-import { authPopupOptions, isAuthPopupUrl } from './popups'
-import { browserUserAgent, partitionFor, workspaceSession } from './sessions'
+import { authPopupOptions, bindAuthPopupWindow, isAuthPopupUrl } from './popups'
+import { browserUserAgent, browserWebPreferences, partitionFor, workspaceSession } from './sessions'
 
 export interface WorkspaceHostOptions {
   window: BrowserWindow
@@ -481,16 +481,7 @@ export class WorkspaceHost {
     const partition = partitionFor(id, settings.isolatedWorkspaces)
     workspaceSession(partition)
     const view = new WebContentsView({
-      webPreferences: {
-        partition,
-        sandbox: true,
-        contextIsolation: true,
-        nodeIntegration: false,
-        webSecurity: true,
-        allowRunningInsecureContent: false,
-        spellcheck: true,
-        backgroundThrottling: true
-      }
+      webPreferences: browserWebPreferences(partition)
     })
     view.setBackgroundColor('#0B0E14')
     view.setVisible(false)
@@ -536,17 +527,7 @@ export class WorkspaceHost {
       return { action: 'deny' }
     })
     contents.on('did-create-window', (child) => {
-      child.setMenuBarVisibility(false)
-      child.webContents.setWindowOpenHandler(({ url: nestedUrl }) => {
-        if (isAuthPopupUrl(nestedUrl)) {
-          return {
-            action: 'allow',
-            overrideBrowserWindowOptions: authPopupOptions(partition, this.options.window)
-          }
-        }
-        this.openExternalLink(nestedUrl)
-        return { action: 'deny' }
-      })
+      bindAuthPopupWindow(child, partition, this.options.window, (url) => this.openExternalLink(url))
     })
 
     const touch = (): void => {

@@ -333,9 +333,26 @@ const AUTH_POPUP_HOSTS = new Set([
   'gitlab.com',
   'bitbucket.org',
   'login.microsoftonline.com',
+  'login.live.com',
   'vercel.com',
   'supabase.com'
 ])
+
+const AUTH_POPUP_SUFFIXES = [
+  '.google.com',
+  '.googleapis.com',
+  '.googleusercontent.com',
+  '.supabase.co',
+  '.supabase.com',
+  '.vercel.com',
+  '.github.com',
+  '.t3.codes',
+  '.clerk.accounts.dev',
+  '.firebaseapp.com',
+  '.web.app',
+  '.auth0.com',
+  '.workos.com'
+]
 
 /** True for popup destinations that must stay in a shared-session child window. */
 export function isAllowedAuthPopup(raw: string): boolean {
@@ -343,7 +360,8 @@ export function isAllowedAuthPopup(raw: string): boolean {
     const parsed = new URL(raw)
     if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return false
     const host = parsed.hostname.toLowerCase()
-    return AUTH_POPUP_HOSTS.has(host) || host.endsWith('.supabase.co') || host.endsWith('.google.com')
+    if (AUTH_POPUP_HOSTS.has(host) || host.startsWith('accounts.google.')) return true
+    return AUTH_POPUP_SUFFIXES.some((suffix) => host.endsWith(suffix))
   } catch {
     return false
   }

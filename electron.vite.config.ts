@@ -19,7 +19,12 @@ export default defineConfig({
     resolve: { alias: { '@shared': shared } },
     build: {
       target: 'node22',
-      rollupOptions: { input: { index: resolve(__dirname, 'src/preload/index.ts') } }
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, 'src/preload/index.ts'),
+          'browser-compat': resolve(__dirname, 'src/preload/browser-compat.ts')
+        }
+      }
     }
   },
   renderer: {

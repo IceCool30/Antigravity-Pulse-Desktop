@@ -4,7 +4,7 @@
 
 | | |
 | --- | --- |
-| Version | 1.0.2 |
+| Version | 1.0.3 |
 | Platform | Windows 10/11 (x64) first — macOS and Linux packaging configured |
 | Author | Solomon Bukie · [solomonogarbukie@gmail.com](mailto:solomonogarbukie@gmail.com) · [@IceCool30](https://github.com/IceCool30) |
 | License | MIT |
@@ -206,19 +206,20 @@ paths with no query, fragment, userinfo, or metadata addresses, matching the And
 
 ## Releases
 
-Installers are published from `gh release create v1.0.2` with:
+Installers are published from `gh release create v1.0.3` with:
 
-- `Antigravity-Pulse-Desktop-v1.0.2-Setup.exe` — NSIS installer
-- `Antigravity-Pulse-Desktop-v1.0.2-Portable.zip` — portable build
+- `Antigravity-Pulse-Desktop-v1.0.3-Setup.exe` — NSIS installer
+- `Antigravity-Pulse-Desktop-v1.0.3-Portable.zip` — portable build
+- `latest.yml` — auto-updater manifest
 - `SHA256SUMS.txt` — checksum manifest
 
-v1.0.2 is an independent **unsigned** build. Windows SmartScreen may show *"Windows protected your
+v1.0.3 is an independent **unsigned** build. Windows SmartScreen may show *"Windows protected your
 PC"* on first run — click **More info → Run anyway**, and verify the download against
 `SHA256SUMS.txt` first:
 
 ```powershell
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.2-Setup.exe -Algorithm SHA256
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.2-Portable.zip -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.3-Setup.exe -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.3-Portable.zip -Algorithm SHA256
 ```
 
 To produce a signed follow-up build, see [docs/CODE_SIGNING.md](docs/CODE_SIGNING.md) for Azure
@@ -231,8 +232,8 @@ available. Until then, releases are produced and uploaded manually with the GitH
 ```powershell
 npm run dist:win
 # verify artifacts, then (with maintainer approval):
-gh release create v1.0.2 dist/Antigravity-Pulse-Desktop-v1.0.2-* dist/SHA256SUMS.txt `
-  --title "Antigravity Pulse Desktop v1.0.2" --notes-file RELEASE_NOTES.md
+gh release create v1.0.3 dist/Antigravity-Pulse-Desktop-v1.0.3-* dist/latest.yml dist/SHA256SUMS.txt `
+  --title "Antigravity Pulse Desktop v1.0.3" --notes-file RELEASE_NOTES.md
 ```
 
 ---

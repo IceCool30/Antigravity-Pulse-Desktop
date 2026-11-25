@@ -1,27 +1,27 @@
-# Antigravity Pulse Desktop v1.0.2
+# Antigravity Pulse Desktop v1.0.3
 
 The newest desktop release — an all-in-one OLED developer workspace hub with shared Firebase cloud
-sync and a QR-paired Android phone companion. This build adds in-app self-updating, fixes embedded
-sign-in and navigation, and cleans up the About screen. Dependency advisories are patched and
-`npm audit` is clean.
+sync and a QR-paired Android phone companion. This release resolves Google's *"This browser or app
+may not be secure"* block across embedded workspaces, Pulse Browser, and OAuth popups so embedded
+Google and third-party sign-ins complete cleanly.
 
-**Companion app:** [Antigravity Pulse for Android v1.2.2](https://github.com/IceCool30/Antigravity-Pulse-) —
+**Companion app:** [Antigravity Pulse for Android](https://github.com/IceCool30/Antigravity-Pulse-) —
 both apps share one Firebase project and one design language.
 
-## What's new in 1.0.2
+## What's new in 1.0.3
 
-- **In-app updates.** Check GitHub Releases, download the verified installer with progress, and
-  install/restart with one click from Settings → System. You no longer need to visit GitHub manually.
-- **Embedded sign-in fix.** Workspaces and Pulse Browser now send a genuine Chrome user agent matching
-  the bundled Chromium, which resolves Google's *"This browser or app may not be secure"* message in
-  most cases. An **Open in system browser** action remains as a fallback.
-- **Back and forward arrows** in the title bar for every web workspace (Pulse Browser retains its own
-  arrows in its tab chrome). `Alt+←` / `Alt+→` still work everywhere.
-- **Zen mode exit button.** A minimal 28px strip keeps a small exit control visible in Zen mode, so
-  you never need to remember the shortcut.
-- **Cleaner About screen.** Firebase project and database identifiers are no longer displayed, and
-  the footer reads *Developer Solomon Bukie*.
-- **Security patch.** `@grpc/grpc-js` and `minimatch` were updated; all Dependabot alerts are fixed.
+- **Embedded Google & OAuth sign-in fix across every view.**
+  - Disables Blink's `AutomationControlled` marker and aligns Electron sessions, request headers
+    (`User-Agent`, `Sec-CH-UA*`), and a sandboxed `browser-compat` preload (`navigator.userAgentData`,
+    cleaned `navigator.webdriver`) with standard desktop Chrome identity matching the bundled Chromium
+    version.
+  - Strips `X-Requested-With` headers and normalizes Google identity requests in
+    `onBeforeSendHeaders`.
+  - Hardens nested OAuth popups (`bindAuthPopupWindow`) so secondary auth windows inherit the same
+    sandboxed `browser-compat` preload and Chrome identity, and expands allowed auth popup hosts and
+    provider domains (`login.live.com`, `.google.com`, `.googleapis.com`, `.googleusercontent.com`,
+    `.supabase.com`, `.vercel.com`, `.github.com`, `.t3.codes`, `.clerk.accounts.dev`,
+    `.firebaseapp.com`, `.web.app`, `.auth0.com`, `.workos.com`).
 
 ## Highlights
 
@@ -29,50 +29,30 @@ both apps share one Firebase project and one design language.
   GitHub, Vercel, Supabase, Pulse Browser, and Cloud Sync & Phone Companion. Each is a real
   `WebContentsView` mounted once and kept warm — sessions, sign-ins, drafts, and scroll positions
   survive every switch. Live per-workspace RAM readouts and one-click unload to reclaim memory.
-- **Split View.** Two web workspaces side by side with a draggable divider, independent bounds, and
-  automatic collapse when the window gets too narrow. `Alt+click` a rail item to split.
-- **Command Palette (`Ctrl+K`).** Fuzzy-jump to any workspace, fast action, or recent URL without
-  leaving the keyboard.
-- **Zen mode.** `Ctrl+\` or `F11` drops the titlebar and rail so the workspace owns the whole window.
-- **12 OLED / Light themes.** Default Dark `#000000` / `#FFC799`, Legacy Dark, Catppuccin, Dracula,
-  Everforest, Gruvbox Material, Monokai, Nord, One Dark Pro, Tokyo Night, Solarized Dark, and Vesper —
-  plus adaptive light mode (`#EFF3F8` / `#FFFFFF` / `#0F172A`). Every accent is contrast-clamped to
-  WCAG AA+ at ≥ 4.8:1.
-- **System Tray Keep-Alive.** Closing the window keeps Pulse running in the tray with a live
-  workspace tooltip and pinned count. The tray menu switches workspaces, toggles the bridge, and
-  quits cleanly.
-- **Shared Firebase Cloud Sync with Android v1.2.1.** Google sign-in plus real-time Firestore CRUD
-  for server profiles and copilot prompts, using the exact schema and the same named database as the
-  Android app.
-- **QR Phone Companion Bridge.** Opt-in local HTTP + WebSocket bridge with a 256-bit bearer token,
-  LAN / Tailscale discovery, and a QR code the Android app scans directly.
-- **Pulse Browser.** A focused multi-tab browser sharing the same persistent sign-in session, with
-  tab strip, address bar, and in-page find.
-- **Crash isolation.** If one workspace renderer stops, only that workspace shows a recovery banner.
-  Reload it in one click — the other eight keep running.
-
-## Security fixes in 1.0.2
-
-- `@grpc/grpc-js` pinned to `1.14.5` — fixes the high-severity `getAuthContext` authorization bypass
-  and a low-severity error-message disclosure in the Firebase toolchain.
-- `minimatch` pinned to `11.0.2` in the packaging toolchain — fixes a moderate denial-of-service
-  issue with crafted glob patterns.
-- `npm audit` now reports **0 vulnerabilities**.
+- **In-app auto-update.** Check GitHub Releases, download the verified installer with progress, and
+  install/restart in one click from **Settings → System**.
+- **Split View & Zen mode.** Side-by-side workspace panes (`Alt+click` a rail item), Command Palette
+  (`Ctrl+K`), Zen mode (`Ctrl+\` / `F11`) with an exit strip, back/forward arrows, and Crash isolation.
+- **12 OLED / Light themes.** WCAG AA+ contrast-clamped accents across dark (`#000000` / `#FFC799`)
+  and adaptive light modes.
+- **Shared Firebase Cloud Sync & QR Phone Companion Bridge.** Paired real-time Firestore sync and local
+  HTTP + WebSocket bridge with Android v1.2.1+.
 
 ## Install
 
 | File | What it is |
 | --- | --- |
-| `Antigravity-Pulse-Desktop-v1.0.2-Setup.exe` | NSIS installer (per-user, Start Menu + desktop shortcut) |
-| `Antigravity-Pulse-Desktop-v1.0.2-Portable.zip` | Portable build — extract and run, no install |
-| `SHA256SUMS.txt` | SHA-256 manifest for both files above |
+| `Antigravity-Pulse-Desktop-v1.0.3-Setup.exe` | NSIS installer (per-user, Start Menu + desktop shortcut) |
+| `Antigravity-Pulse-Desktop-v1.0.3-Portable.zip` | Portable build — extract and run, no install |
+| `latest.yml` | Electron auto-updater release metadata |
+| `SHA256SUMS.txt` | SHA-256 manifest for the release files above |
 
 macOS and Linux packaging is configured; build from source with `npm run dist:mac` /
 `npm run dist:linux`.
 
 ### Windows SmartScreen first-run note
 
-v1.0.2 is an **independent, unsigned build** — it is not code-signed with a commercial certificate
+v1.0.3 is an **independent, unsigned build** — it is not code-signed with a commercial certificate
 yet. On first launch Windows SmartScreen may show **"Windows protected your PC"**. This is expected
 for a new, unsigned publisher:
 
@@ -83,8 +63,8 @@ To be certain the file you downloaded is the one that was published, verify it a
 `SHA256SUMS.txt` before running:
 
 ```powershell
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.2-Setup.exe -Algorithm SHA256
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.2-Portable.zip -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.3-Setup.exe -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.3-Portable.zip -Algorithm SHA256
 ```
 
 Compare each result with the matching line in `SHA256SUMS.txt`. If they differ, do not run the file.
@@ -103,22 +83,10 @@ the QR code with Antigravity Pulse for Android v1.2.1+.
 - The bridge is off by default and requires the bearer token on every API call.
 - Firestore profile documents always store `authToken: ""`; real tokens live only in the OS secret
   store (Windows DPAPI via Electron `safeStorage`).
-- Google authentication opens your **system browser** with PKCE and a loopback callback. The app
-  never embeds the OAuth consent screen.
+- Cloud Sync Google authentication opens your **system browser** with PKCE and a loopback callback.
 - T3 handshake tokens (`#token=…`) stay in memory and are stripped before anything is persisted.
 - `contextIsolation`, `sandbox`, and `nodeIntegration: false` everywhere; the renderer only talks to
   a typed preload bridge.
-
-## Known limitations
-
-- The Google OAuth consent screen may still be in **Testing**. Publish it at
-  **Google Auth Platform → Audience → Publish app** to allow accounts outside the test list.
-- GitHub Actions release automation needs an active billing account; v1.0.2 artifacts were produced
-  and uploaded manually with the GitHub CLI.
-- The update checker reads GitHub Releases; it does not install updates automatically.
-- The Google Desktop OAuth client secret is compiled into the installed app because Google's token
-  endpoint requires it even with PKCE. Google treats installed-app client secrets as
-  non-confidential; `.env` is never committed.
 
 ---
 

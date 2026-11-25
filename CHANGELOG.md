@@ -2,6 +2,27 @@
 
 All notable changes to Antigravity Pulse Desktop are documented here.
 
+## [1.0.3] — 2026-11-25
+
+### Fixed
+
+- Embedded Google and OAuth sign-in flows across all web workspaces, Pulse Browser, and nested auth
+  popups no longer trigger Google's *"This browser or app may not be secure"* block:
+  - Disabled Blink's `AutomationControlled` feature flag (`app.commandLine`) and shared genuine
+    desktop Chrome UA / Client Hints (`Sec-CH-UA`, `Sec-CH-UA-Full-Version-List`,
+    `Sec-CH-UA-Platform`, `navigator.userAgentData`, stripped `navigator.webdriver`) across
+    requests and the page world via a sandboxed `browser-compat` preload.
+  - Normalized outbound Google identity request headers and stripped Electron `X-Requested-With`
+    markers via `session.webRequest.onBeforeSendHeaders`.
+  - Applied consistent hardened `browserWebPreferences` (`nodeIntegrationInSubFrames: true`,
+    `sandbox: true`, `contextIsolation: true`) and nested popup inheritance (`bindAuthPopupWindow`),
+    while expanding allowed OAuth popup hosts/suffixes (`login.live.com`, `.google.com`,
+    `.googleapis.com`, `.googleusercontent.com`, `.supabase.com`, `.vercel.com`, `.github.com`,
+    `.t3.codes`, `.clerk.accounts.dev`, `.firebaseapp.com`, `.web.app`, `.auth0.com`, `.workos.com`).
+  - Added automated unit coverage in `tests/browser-identity.test.ts`.
+
+[1.0.3]: https://github.com/IceCool30/Antigravity-Pulse-Desktop/releases/tag/v1.0.3
+
 ## [1.0.2] — 2026-11-23
 
 ### Added

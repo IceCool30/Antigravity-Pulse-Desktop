@@ -2,7 +2,24 @@
 
 All notable changes to Antigravity Pulse Desktop are documented here.
 
-## [1.0.3] — 2026-11-25
+## [1.0.4] - 2026-11-28
+
+### Fixed
+
+- **Workspace sign-ins no longer disappear after leaving and returning.** A one-time settings
+  migration resets `isolatedWorkspaces` to the shared session (`persist:antigravity-main`), so the
+  existing Google, GitHub, T3, Vercel and Supabase logins are used again. Users who deliberately
+  want a separate session can still enable "Isolate session" afterwards.
+- **OAuth sign-in pages are no longer saved as workspace resume URLs.** Google
+  (`accounts.google.com`) sign-in/consent pages and Clerk/OAuth callback URLs are filtered out of
+  `lastUrls` both when settings are loaded and when navigation is persisted, so reopening a
+  workspace starts at its real home page instead of a stale sign-in URL with one-time state.
+- Settings → Workspaces now warns that isolating a workspace starts with a fresh session and that
+  existing site sign-ins will not carry over.
+
+[1.0.4]: https://github.com/IceCool30/Antigravity-Pulse-Desktop/releases/tag/v1.0.4
+
+## [1.0.3] - 2026-11-25
 
 ### Fixed
 

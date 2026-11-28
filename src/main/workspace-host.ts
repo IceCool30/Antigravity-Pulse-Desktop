@@ -30,6 +30,7 @@ import {
 } from '@shared/workspaces'
 import {
   isAllowedExternalUrl,
+  isAuthResumeUrl,
   normalizePairingUrl,
   stripUrlSecrets
 } from '@shared/validation'
@@ -671,6 +672,7 @@ export class WorkspaceHost {
       if (!view || view.webContents.isDestroyed()) return
       const clean = stripUrlSecrets(view.webContents.getURL())
       if (!clean || !/^https?:\/\//i.test(clean) || clean.length > 2048) return
+      if (isAuthResumeUrl(clean)) return
       const settings = this.options.getSettings()
       this.options.saveSettings({ lastUrls: { ...settings.lastUrls, [id]: clean } })
     }, 800)

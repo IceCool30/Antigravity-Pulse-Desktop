@@ -164,7 +164,7 @@ export function WorkspacesSection() {
       <div>
         <SectionTitle>Workspaces</SectionTitle>
         <SectionHint>
-          Overrides apply on the next load. Isolated workspaces get their own session partition.
+          Overrides apply on the next load. Isolating a workspace gives it a fresh session — existing site sign-ins will not carry over.
         </SectionHint>
       </div>
       {WORKSPACES.map((workspace) => (

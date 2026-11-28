@@ -1,4 +1,4 @@
-# Antigravity Pulse Desktop v1.0.3
+# Antigravity Pulse Desktop v1.0.4
 
 The newest desktop release — an all-in-one OLED developer workspace hub with shared Firebase cloud
 sync and a QR-paired Android phone companion. This release resolves Google's *"This browser or app
@@ -7,6 +7,19 @@ Google and third-party sign-ins complete cleanly.
 
 **Companion app:** [Antigravity Pulse for Android](https://github.com/IceCool30/Antigravity-Pulse-) —
 both apps share one Firebase project and one design language.
+
+## What's new in 1.0.4
+
+- **Signed-in sessions stay signed in.** If "Isolate session" was enabled, each web workspace was
+  moved into a brand-new empty browser partition on the next launch, so Google, GitHub, T3 Code,
+  Vercel and Supabase all appeared logged out even though the logins were still present in the
+  shared session. This release migrates those settings back to the shared session on first launch.
+  No manual settings changes are needed. If you want a separate session for a workspace, turn on
+  **Settings → Workspaces → Isolate session** again — it now warns that the workspace starts fresh.
+- **Stale sign-in URLs no longer become your resume page.** Google sign-in/consent pages and Clerk
+  OAuth callback URLs are no longer saved as a workspace's last URL, and any already stored ones are
+  discarded on load. Reopening T3 Code or AI Studio now opens the actual app instead of a Google
+  sign-in screen with expired one-time state.
 
 ## What's new in 1.0.3
 
@@ -42,8 +55,8 @@ both apps share one Firebase project and one design language.
 
 | File | What it is |
 | --- | --- |
-| `Antigravity-Pulse-Desktop-v1.0.3-Setup.exe` | NSIS installer (per-user, Start Menu + desktop shortcut) |
-| `Antigravity-Pulse-Desktop-v1.0.3-Portable.zip` | Portable build — extract and run, no install |
+| `Antigravity-Pulse-Desktop-v1.0.4-Setup.exe` | NSIS installer (per-user, Start Menu + desktop shortcut) |
+| `Antigravity-Pulse-Desktop-v1.0.4-Portable.zip` | Portable build — extract and run, no install |
 | `latest.yml` | Electron auto-updater release metadata |
 | `SHA256SUMS.txt` | SHA-256 manifest for the release files above |
 
@@ -52,7 +65,7 @@ macOS and Linux packaging is configured; build from source with `npm run dist:ma
 
 ### Windows SmartScreen first-run note
 
-v1.0.3 is an **independent, unsigned build** — it is not code-signed with a commercial certificate
+v1.0.4 is an **independent, unsigned build** — it is not code-signed with a commercial certificate
 yet. On first launch Windows SmartScreen may show **"Windows protected your PC"**. This is expected
 for a new, unsigned publisher:
 
@@ -63,8 +76,8 @@ To be certain the file you downloaded is the one that was published, verify it a
 `SHA256SUMS.txt` before running:
 
 ```powershell
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.3-Setup.exe -Algorithm SHA256
-Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.3-Portable.zip -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.4-Setup.exe -Algorithm SHA256
+Get-FileHash .\Antigravity-Pulse-Desktop-v1.0.4-Portable.zip -Algorithm SHA256
 ```
 
 Compare each result with the matching line in `SHA256SUMS.txt`. If they differ, do not run the file.

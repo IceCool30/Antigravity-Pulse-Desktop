@@ -4,7 +4,9 @@ import { promises as fs } from 'node:fs'
 import { join } from 'node:path'
 import {
   DEFAULT_SETTINGS,
+  SETTINGS_VERSION,
   applySettingsPatch,
+  migrateSettings,
   sanitizeSettings,
   type Settings
 } from '@shared/settings'
@@ -66,7 +68,15 @@ export class SettingsStore {
 
     try {
       const text = await fs.readFile(this.settingsPath, 'utf8')
-      this.settings = sanitizeSettings(JSON.parse(text))
+      const parsed: unknown = JSON.parse(text)
+      this.settings = migrateSettings(parsed)
+      if (
+        typeof parsed !== 'object' ||
+        parsed === null ||
+        (parsed as { version?: unknown }).version !== SETTINGS_VERSION
+      ) {
+        await this.writeSettings()
+      }
     } catch {
       this.settings = { ...DEFAULT_SETTINGS }
       await this.writeSettings()

@@ -1,13 +1,15 @@
 import { FONT_FAMILIES, FONT_SIZES, isPresetName, normalizeHex, type ContrastMode, type FontFamily, type ThemeMode } from './theme'
 import { isWorkspaceId, type WorkspaceId } from './workspaces'
-import { MAX_T3_URL_LENGTH, normalizeAccentOverride, normalizeHttpUrl, stripUrlSecrets } from './validation'
+import { MAX_T3_URL_LENGTH, isAuthResumeUrl, normalizeAccentOverride, normalizeHttpUrl, stripUrlSecrets } from './validation'
+
+export const SETTINGS_VERSION = 2
 
 export interface BrowserTabSeed {
   url: string
 }
 
 export interface Settings {
-  version: 1
+  version: typeof SETTINGS_VERSION
   themeMode: ThemeMode
   presetName: string
   contrastMode: ContrastMode
@@ -38,7 +40,7 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  version: 1,
+  version: SETTINGS_VERSION,
   themeMode: 'DARK',
   presetName: 'Default Dark',
   contrastMode: 'STRONG',
@@ -123,6 +125,7 @@ function sanitizeLastUrls(value: unknown, base: Record<string, string>): Record<
     const clean = stripUrlSecrets(raw)
     if (!clean || clean.length > MAX_T3_URL_LENGTH) continue
     if (!/^https?:\/\//i.test(clean)) continue
+    if (isAuthResumeUrl(clean)) continue
     output[key] = clean
   }
   return output
@@ -174,7 +177,7 @@ function sanitizeBrowserPort(value: unknown, fallback: number): number {
 export function sanitizeSettings(raw: unknown, base: Settings = DEFAULT_SETTINGS): Settings {
   const input = isRecord(raw) ? raw : {}
   const merged: Settings = {
-    version: 1,
+    version: SETTINGS_VERSION,
     themeMode: asThemeMode(input.themeMode, base.themeMode),
     presetName:
       isPresetName(input.presetName) && typeof input.presetName === 'string'
@@ -224,6 +227,18 @@ export function sanitizeSettings(raw: unknown, base: Settings = DEFAULT_SETTINGS
   const activeTab = merged.browserTabs[merged.browserActiveIndex]
   if (!activeTab) merged.browserActiveIndex = 0
   return merged
+}
+
+/**
+ * One-time v1 → v2 upgrade. v1 let users isolate workspaces into fresh session
+ * partitions but never carried existing sign-ins over, so turning the option on
+ * made every site look signed out on the next launch. v2 resets that list to the
+ * shared session. Users can still opt back in explicitly afterwards.
+ */
+export function migrateSettings(raw: unknown): Settings {
+  const input = isRecord(raw) ? raw : {}
+  if (input.version === SETTINGS_VERSION) return sanitizeSettings(raw)
+  return sanitizeSettings({ ...input, version: SETTINGS_VERSION, isolatedWorkspaces: [] })
 }
 
 /** Applies a shallow patch and sanitizes the result against the current value. */

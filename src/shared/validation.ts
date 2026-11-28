@@ -140,6 +140,33 @@ export function stripUrlSecrets(raw: string): string {
   }
 }
 
+/**
+ * True when a URL is an identity-provider sign-in/consent step rather than a
+ * usable workspace destination. These URLs carry one-time OAuth state, so they
+ * must never be persisted as a resume URL — reloading them strands the user on
+ * a stale sign-in page instead of the site they were using.
+ */
+export function isAuthResumeUrl(raw: string): boolean {
+  try {
+    const parsed = new URL(raw)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
+    const host = parsed.hostname.toLowerCase()
+    const path = parsed.pathname.toLowerCase()
+    if (host === 'accounts.google.com' || host.startsWith('accounts.google.')) return true
+    if (host === 'accounts.youtube.com') return true
+    if (host.startsWith('clerk.') || host === 'clerk.accounts.dev') return true
+    return (
+      /\/v3\/signin/.test(path) ||
+      /\/sign-?in\b/.test(path) ||
+      /\/oauth\/?callback/.test(path) ||
+      /\/authorize\b/.test(path) ||
+      /\/consent\b/.test(path)
+    )
+  } catch {
+    return false
+  }
+}
+
 export interface ServerProfileInput {
   name: string
   endpointUrl: string
